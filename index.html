@@ -6,16 +6,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
+
+    canvas {
+        display: block;
+    }
+</style>
 
 <body>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.3/p5.min.js"
         integrity="sha512-0zGLOFv/+OQ6YfVCSGDQWhrDRx0ONmBqWvs3gI4olm8i6xtKoG1FhEnB4eTaWCVnojyfUDgE8Izeln+mAJAkFA=="
         crossorigin="anonymous" referrerpolicy="no-referrer">
-        </script>
+    </script>
 </body>
+
 <script>
     let points = [];
+    let angle = Math.PI / 6;  // Ángulo inicial en PI/6
+    let angleSpeed = 0.02;  // Velocidad de rotación
+    let currentPivotIndex = 0; // Índice del pivote actual
+    let lineLength = 500;   // Longitud de la línea
 
     function setup() {
         createCanvas(windowWidth, windowHeight);
@@ -38,6 +54,55 @@
         for (let p of points) {
             point(p.x, p.y);
         }
+
+        // Pivote actual
+        let p1 = points[currentPivotIndex];
+
+        // Crear un vector que gire alrededor de p1
+        let lineVector = createVector(lineLength, 0);  // Vector de longitud 500 (5 veces más largo)
+        lineVector.rotate(angle);               // Rotar el vector por el ángulo actual
+
+        // Dibujar la línea que cruza p1 y rota
+        stroke(255, 0, 0);
+        strokeWeight(2);
+        line(p1.x, p1.y, p1.x + lineVector.x, p1.y + lineVector.y);
+
+        // Incrementar el ángulo para que la línea gire
+        angle += angleSpeed;
+
+        // Verificar si la línea está cerca angularmente a otro punto
+        let closestPointIndex = findClosestPointIndex(p1, angle);
+
+        if (closestPointIndex !== -1) {
+            // Cambiar el pivote al punto más cercano angularmente
+            currentPivotIndex = closestPointIndex;
+            angle = 0;  // Resetear el ángulo para el nuevo pivote
+        }
+    }
+
+    // Función para encontrar el índice del punto más cercano angularmente
+    function findClosestPointIndex(pivot, currentAngle) {
+        let closestIndex = -1;
+        let smallestAngleDiff = Infinity;
+
+        for (let i = 0; i < points.length; i++) {
+            if (i !== currentPivotIndex) {
+                // Calcular el ángulo entre el pivote actual y el punto i
+                let point = points[i];
+                let angleToPoint = atan2(point.y - pivot.y, point.x - pivot.x);
+
+                // Encontrar la diferencia angular
+                let angleDiff = abs((angleToPoint - currentAngle + TWO_PI) % TWO_PI);
+
+                // Si la diferencia angular es pequeña, consideramos que estamos cerca de ese punto
+                if (angleDiff < 0.1 && angleDiff < smallestAngleDiff) {
+                    smallestAngleDiff = angleDiff;
+                    closestIndex = i;
+                }
+            }
+        }
+
+        return closestIndex;
     }
 </script>
 
