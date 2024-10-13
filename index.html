@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.3/p5.min.js"
+        integrity="sha512-0zGLOFv/+OQ6YfVCSGDQWhrDRx0ONmBqWvs3gI4olm8i6xtKoG1FhEnB4eTaWCVnojyfUDgE8Izeln+mAJAkFA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer">
+        </script>
+</body>
+<script>
+    let points = [];
+
+    function setup() {
+        createCanvas(windowWidth, windowHeight);
+        background(200);
+
+        // Crear 4 puntos aleatorios
+        for (let i = 0; i < 4; i++) {
+            let x = random(width);   // Genera un valor aleatorio entre 0 y el ancho de la ventana
+            let y = random(height);  // Genera un valor aleatorio entre 0 y el alto de la ventana
+            points.push(createVector(x, y)); // Guardar los puntos como vectores
+        }
+    }
+
+    function draw() {
+        background(200);
+        stroke(0);
+        strokeWeight(10);
+
+        // Dibujar los 4 puntos en la pantalla
+        for (let p of points) {
+            point(p.x, p.y);
+        }
+    }
+</script>
+
+</html>
