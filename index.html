@@ -32,6 +32,7 @@
     let angleSpeed = 0.02;  // Velocidad de rotación
     let currentPivotIndex = 0; // Índice del pivote actual
     let lineLength = 500;   // Longitud de la línea
+    let previousPivotIndex = null;  // Para rastrear el pivote anterior
 
     function setup() {
         createCanvas(windowWidth, windowHeight);
@@ -73,10 +74,13 @@
         // Verificar si la línea está cerca angularmente a otro punto
         let closestPointIndex = findClosestPointIndex(p1, angle);
 
-        if (closestPointIndex !== -1) {
-            // Cambiar el pivote al punto más cercano angularmente
+        if (closestPointIndex !== -1 && closestPointIndex !== previousPivotIndex) {
+            // Guardar el ángulo en el que la línea sale del pivote actual
+            previousPivotIndex = currentPivotIndex;
             currentPivotIndex = closestPointIndex;
-            angle = 0;  // Resetear el ángulo para el nuevo pivote
+
+            // No reiniciar el ángulo, continuar desde el ángulo actual
+            // Mantiene el ángulo de rotación continuo
         }
     }
 
